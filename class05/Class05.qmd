@@ -1,0 +1,101 @@
+---
+title: "class 05 data visualization with ggplot2"
+author: "Trinity Lee A16639698"
+format: pdf
+---
+
+## Using GGPLOT
+
+The ggplot2 package does not already come installed with R
+
+We have to use `install.packages()` function to install ggplot2
+
+```{r}
+head(cars)
+```
+
+To use ggplot I need to load it up before I can call any of the functions in the package. I do this with the `library()` function. 
+
+```{r}
+library(ggplot2)
+ggplot()
+```
+
+All ggplot figures have at least three things: 
+- data (the stuff we want to plot)
+- aesthetic mapping (aes vales)
+- geoms
+
+```{r}
+ggplot(cars)+aes(x=speed,y=dist) + geom_point()
+```
+
+ggplot is not the only graphing system in R there are lots of others. THere is even "base R" graphics.
+
+```{r}
+plot(cars)
+```
+
+```{r}
+ggplot(cars)+aes(x=speed,y=dist) + geom_point() + geom_smooth()
+```
+
+```{r}
+ggplot(cars)+aes(x=speed,y=dist) + geom_point() + geom_smooth(method="lm",se=FALSE)
+```
+
+```{r}
+ggplot(cars)+aes(x=speed,y=dist) + geom_point() + geom_smooth(method="lm",se=FALSE)+labs(title="speed vs stopping distance of cars", x="speed of cars (mph)",y="stopping distance (ft)")+theme_bw()
+```
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+```{r}
+nrow(genes)
+```
+```{r}
+colnames(genes)
+ncol(genes)
+```
+```{r}
+table(genes$State)
+table(genes$State)/nrow(genes)*100
+```
+```{r}
+p<-ggplot(genes)+aes(x=Condition1, y=Condition2, col=State)+geom_point()
+p+scale_color_manual (values=c("red","orange","yellow"))+labs(title="Drug treatment influence on Gene Expression", x= "no drug used (control)",y="treatment with drug")
+```
+
+```{r}
+# install.packages("dplyr")  ## un-comment to install if needed
+library(dplyr)
+library(gapminder)
+gapminder_2007 <- gapminder %>% filter(year==2007)
+ggplot(gapminder_2007)+aes(x=gdpPercap, y=lifeExp, size=pop)+geom_point(alpha=0.5)+scale_size_area(max_size=10)
+```
+```{r}
+gapminder_1957<-gapminder %>% filter(year==1957|year==2007)
+ggplot(gapminder_1957)+aes(x=gdpPercap, y=lifeExp, size=pop,color=continent)+geom_point(alpha=0.5)+scale_size_area(max_size=10)+facet_wrap(~year)
+```
+
+```{r}
+gapminder_top5 <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(pop)) %>% 
+  top_n(5, pop)
+
+gapminder_top5
+ggplot(gapminder_top5)+aes(x=reorder(country,-pop),y=pop,fill=country)+ geom_col(col="gray30")+guides(fill="none")
+```
+
+```{r}
+USArrests$State <- rownames(USArrests)
+ggplot(USArrests) +
+  aes(x=reorder(State,Murder), y=Murder) +
+  geom_point() +geom_segment(aes(x=State,xend=State,y=0,yend=Murder),color="red")+coord_flip()
+```
+```
+
