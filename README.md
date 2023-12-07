@@ -6,6 +6,6 @@ Class 05: [Intro to GGPlot](https://github.com/t6lee21/Bimm143_github/blob/main/
 
 Class 06: [R functions](https://github.com/t6lee21/Bimm143_github/blob/main/class06/class06.md)
 
-Class 07: [Intro to Machine Learning](https://github.com/t6lee21/Bimm143_github/blob/main/class07/Class07.md)
+Class 07: [Intro to Machine Learning](https://github.com/t6lee21/Bimm143_github/blob/main/class07/"Class07.md")
 
 Class 08: [ML Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class08/class08.md)
