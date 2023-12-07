@@ -1,0 +1,68 @@
+---
+title: "Class 12"
+author: "Trinity Lee A16639698"
+format: pdf
+---
+
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+```
+
+#section 1. Proportions of G/G in a population 
+downloaded a CSV file from Ensemble and read CSV
+```{r}
+mxl<-read.csv("373531-SampleGenotypes-Homo_sapiens_variation_Sample_rs8067378.csv")
+head(mxl)
+
+```
+
+```{r}
+table(mxl$Genotype..forward.strand.)
+table(mxl$Genotype..forward.strand.)/nrow(mxl)*100
+```
+
+Now lets look at a different population. I picked GBR. 
+```{r}
+gbr<-read.csv("373522-SampleGenotypes-Homo_sapiens_variation_Sample_rs8067378.csv")
+head(gbr)
+```
+Find proportion of G/G
+
+```{r}
+table(gbr$Genotype..forward.strand.)
+round(table(gbr$Genotype..forward.strand.)/nrow(gbr)*100,2)
+```
+
+This variant that is associated with childhood asthma is more frequent in the GBR population than the MXL population 
+
+Now let's dig into this further.
+
+#4 population analysis
+```{r}
+expr<-read.table("sample geno.txt")
+head(expr)
+```
+
+Read this file into R and determine the sample size for each genotype and their
+corresponding median expression levels for each of these genotypes
+```{r}
+nrow(expr)
+table(expr$geno)
+
+```
+
+
+```{r}
+library(ggplot2)
+
+```
+
+lets make a boxplot
+
+```{r}
+ggplot(expr)+aes(x=geno,y=exp,fill=geno)+geom_boxplot(notch=TRUE)
+```
+what could you infer from the relative
+expression value between A/A and G/G displayed in this plot? Does the SNP effect the
+expression of ORMDL3? 
+G/G does have a significant impact on the expression of the ORMDL3 being less compared to genotype A/A as seen by the difference in box plots. 

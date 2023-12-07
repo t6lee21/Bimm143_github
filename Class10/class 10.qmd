@@ -1,0 +1,320 @@
+---
+title: "class 10 bioinformatics"
+author: "Trinity Lee A16639698"
+format: pdf
+---
+
+##1: Introduction to the RCSB Protein Data Bank (PDB)
+The PDB archive is the major repository of information about the 3D structures of large biological molecules, including proteins and nucleic acids. Understanding the shape of these molecules helps to understand how they work. This knowledge can be used to help deduce a structure’s role in human health and disease, and in drug development. 
+
+downloaded composition stats 
+```{r}
+stats<-read.csv("PDBstats.csv", row.names=1)
+stats
+```
+There is a problem here due to the commas in the numbers. This causes R to treat them as characters.
+
+```{r}
+x<-stats$X.ray
+x
+as.numeric(gsub(",","",x))
+```
+```{r}
+rm.comma<-function(x){as.numeric(gsub(",","", x))}
+rm.comma(stats$EM)
+```
+
+I can use `apply()` to fix the whole table 
+
+```{r}
+pdbstats<-apply(stats,2,rm.comma)
+rownames(pdbstats)<- rownames(stats)
+head(pdbstats)
+```
+
+Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+```{r}
+totals<-apply(pdbstats,2,sum)
+round(totals/totals["Total"]*100,2)
+```
+
+Q2: What proportion of structures in the PDB are protein?
+
+```{r}
+round(pdbstats[1,"Total"]/sum(pdbstats[,"Total"])*100,2)
+round(pdbstats[1,"Total"]/251600768*100,2)
+```
+
+Skip Q3
+
+Q4: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure?
+
+The hydrogen molecules are too small to view. This is a 2 angstrom structure and hydrogen is not visible at this resolution. You need 1 angstrom. 
+
+Q5: There is a critical “conserved” water molecule in the binding site. Can you identify this water molecule? What residue number does this water molecule have
+
+Water HOH 308 
+
+Q6Q6: Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligand. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water (we recommend “Ball & Stick” for these side-chains). Add this figure to your Quarto document.
+
+here is a figure of the HIP-Pr with the catalytic ASP residues the MK1 conpound and the all important water 308.
+
+![](1HSG.png)
+
+## The bio3d package for structural bioinformatics 
+```{r}
+library(bio3d)
+pdb<-read.pdb("1hsg")
+pdb
+```
+
+```{r}
+head(pdb$atom)
+```
+
+##Predicting functional motions of a single structure
+let's finish today with a bioinformatics calculation to predict the functional motions of a PDB structure. 
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+# Perform flexiblity prediction
+m <- nma(adk)
+```
+
+```{r}
+plot(m)
+mktrj(m, file="adk_m7.pdb")
+```
+
+##4. Comparative structure analysis of Adenylate Kinase
+The bio3d package `pca()` function provides a convenient interface for performing PCA of biomolecular structure data. 
+
+Starting from only one Adk PDB identifier (PDB ID: 1AKE) we will search the entire PDB for related structures using BLAST, fetch, align and superpose the identified structures, perform PCA and finally calculate the normal modes of each individual structure in order to probe for potential differences in structural flexibility.
+
+We will begin by first installing the packages we need for today’s session.
+The `msa()` oackage is from BioConductor. These packages focus on genomics type work and are managed by the `BiocManager` package first 
+Install `BiocManager` and `BiocManager::install("msa")` entered in R console
+
+Q10. Which of the packages above is found only on BioConductor and not CRAN? 
+msa
+Q11. Which of the above packages is not found on BioConductor or CRAN?
+bio3d-view
+Q12. True or False? Functions from the devtools package can be used to install packages from GitHub and BitBucket?
+True
+
+```{r}
+library(bio3d)
+aa<-get.seq("1AKE_A")
+aa
+```
+Q13. How many amino acids are in this sequence, i.e. how long is this sequence?
+214
+
+Now I can search the PDB database for related sequences:
+```{r}
+#blast or hmmer search
+b<-blast.pdb(aa)
+# Plot a summary of search results
+hits<-plot(b)
+attributes(b)
+head(b$hits.tbl)
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','6S36_A','6RZE_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','3GMT_A','4PZL_A')
+hits$pdb.id
+```
+side-note:lets annotate these structures (in other words find out what they are, what species they are from, stuff about the experiments they were solved in etc. )
+
+For this we can use the `pdb.annotate()`
+
+```{r}
+anno<-pdb.annotate(hits$pdb.id)
+```
+
+```{r}
+#attributes(anno)
+head(anno)
+```
+
+now we can download all these structures for further analysis with the `get.pdb()` function
+```{r}
+# Download related PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+Now we have all these related structures we can align and supperpose
+
+```{r}
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+##Principal component analysis
+```{r}
+# Perform PCA
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
+
+##5. Optional further visualization
+```{r}
+# Visualize first principal component
+pc1 <- mktrj(pc.xray, pc=1, file="pc_1.pdb")
+```
+![](hivpr_monomer.png)
+
+##8. Custom analysis of resulting models
+
+```{r}
+results_dir <- "hivpr_dimer_23119"
+# File names for all PDB models
+pdb_files <- list.files(path=results_dir,
+                        pattern="*.pdb",
+                        full.names = TRUE)
+pdb_files
+```
+```{r}
+library(bio3d)
+
+# Read all data from Models 
+#  and superpose/fit coords
+pdbs <- pdbaln(pdb_files, fit=TRUE, exefile="msa")
+pdbs
+```
+
+Calculate the RMSD between all models.
+
+```{r}
+rd <- rmsd(pdbs)
+range(rd)
+```
+
+Draw a heatmap of RMSD matrix values
+```{r}
+library(pheatmap)
+
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+```
+
+And a plot pLDDT values across all models
+```{r}
+# Read a reference PDB structure
+pdb <- read.pdb("1hsg")
+```
+
+You could optionally obtain secondary structure from a call to stride() or dssp() on any of the model structures.
+
+```{r}
+plotb3(pdbs$b, typ="l", lwd=2, sse=pdb)
+points(pdbs$b[2,], typ="l", col="red")
+points(pdbs$b[3,], typ="l", col="blue")
+points(pdbs$b[4,], typ="l", col="darkgreen")
+points(pdbs$b[5,], typ="l", col="orange")
+abline(v=100, col="gray")
+```
+
+We can improve the superposition/fitting of our models by finding the most consistent “rigid core” common across all the models. For this we will use the core.find() function:
+```{r}
+core <- core.find(pdbs)
+core.inds <- print(core, vol=0.5)
+xyz <- pdbfit(pdbs, core.inds, outpath="corefit_structures")
+```
+![](corefit.png)
+```{r}
+rd <- rmsd(xyz)
+# Change the names for easy reference
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+```
+
+```{r}
+rf <- rmsf(xyz)
+
+plotb3(rf, sse=pdb)
+abline(v=100, col="gray", ylab="RMSF")
+```
+##Predicted Alignment Error for domains
+
+```{r}
+library(jsonlite)
+
+# Listing of all PAE JSON files
+pae_files <- list.files(path=results_dir,
+                        pattern=".*model.*\\.json",
+                        full.names = TRUE)
+#For example purposes lets read the 1st and 5th files
+
+pae1 <- read_json(pae_files[1],simplifyVector = TRUE)
+pae5 <- read_json(pae_files[5],simplifyVector = TRUE)
+
+attributes(pae1)
+```
+
+```{r}
+# Per-residue pLDDT scores 
+#  same as B-factor of PDB..
+head(pae1$plddt) 
+pae1$max_pae
+pae5$max_pae
+```
+We can plot these with ggplot or with functions from the Bio3D package:
+```{r}
+plot.dmat(pae1$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)")
+```
+
+```{r}
+plot.dmat(pae5$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+#We should really plot all of these using the same z range. Here is the model 1 plot again but this time using the same data range as the plot for model 5:
+
+```{r}
+plot.dmat(pae1$pae, 
+          xlab="Residue Position (i)",
+          ylab="Residue Position (j)",
+          grid.col = "black",
+          zlim=c(0,30))
+```
+
+Residue conservation from alignment file
+```{r}
+aln_file <- list.files(path=results_dir,
+                       pattern=".a3m$",
+                        full.names = TRUE)
+aln_file
+aln <- read.fasta(aln_file[1], to.upper = TRUE)
+```
+How many sequences are in this alignment
+```{r}
+dim(aln$ali)
+```
+
+We can score residue conservation in the alignment with the `conserv()` function.
+```{r}
+sim <- conserv(aln)
+
+plotb3(sim[1:99], sse=trim.pdb(pdb, chain="A"))
+```
+```{r}
+con <- consensus(aln, cutoff = 0.9)
+con$seq
+```
+For a final visualization we can map this conservation score to the Occupancy column of a PDB file for viewing in molecular viewer programs such as Mol*, PyMol, VMD, chimera etc.
+```{r}
+m1.pdb <- read.pdb(pdb_files[1])
+occ <- vec2resno(c(sim[1:99], sim[1:99]), m1.pdb$atom$resno)
+write.pdb(m1.pdb, o=occ, file="m1_conserv.pdb")
+```
+
+![](m1_conserv.png)
+
+
+
+
