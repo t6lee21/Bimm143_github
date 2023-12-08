@@ -1,4 +1,4 @@
-#BIMM143 classwork
+BIMM143 classwork
 
 My classwork for F23 in [BIMM143](https://bioboot.github.io/bimm143_F23/schedule/#15) at UCSanDiego.
 
