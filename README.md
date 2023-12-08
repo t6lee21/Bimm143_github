@@ -12,7 +12,7 @@ Class 08: [ML Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/
 
 Class 09: [Halloween Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class09/Halloween_mini_project.md)
 
-Class 10: [Bioinformatics/Alphafold](https://github.com/t6lee21/Bimm143_github/blob/main/class10/class-10.pdf)
+Class 10: [Bioinformatics/Alphafold](https://github.com/t6lee21/Bimm143_github/blob/main/Class10/class-10.pdf)
 
 Class 12: [Population Analysis](https://github.com/t6lee21/Bimm143_github/blob/main/Class12/Class12.md)
 
