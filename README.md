@@ -10,7 +10,7 @@ Class 07: [Intro to Machine Learning](https://github.com/t6lee21/Bimm143_github/
 
 Class 08: [ML Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class08/class08_mini_project.md)
 
-Class 09: [Halloween Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class09/class08_Halloween_mini_project.md)
+Class 09: [Halloween Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class09/Halloween_mini_project.md)
 
 Class 10: [Bioinformatics/Alphafold](https://github.com/t6lee21/Bimm143_github/blob/main/class010/class010_Halloween_mini_project.md)
 
