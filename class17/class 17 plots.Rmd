@@ -1,0 +1,46 @@
+
+---
+title: "Class 17 Plots"
+author: Trinity Lee A16639698
+date: November 28, 2023
+output: pdf_document
+---
+
+
+
+```{r}
+file_path <- "mm-second.x.zebrafish.tsv"
+
+# Read the TSV file into a data frame
+data <- read.table(file_path, header = TRUE, sep = "\t")
+
+# Display the first few rows of the data
+head(data)
+
+colnames(data) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
+
+# Display the first few rows of the data
+head(data)
+```
+
+```{r}
+bitscore_values <- data$bitscore
+
+# Create a histogram with breaks=30
+hist(bitscore_values, breaks = 30, col = "skyblue", main = "Histogram of bitscore values",
+     xlab = "Bitscore", ylab = "Frequency")
+```
+
+```{r}
+plot(data$pident  * (data$qend - data$qstart), data$bitscore)
+```
+
+```{r}
+library(ggplot2)
+ggplot(data, aes(pident, bitscore)) + geom_point(alpha=0.1) 
+```
+
+```{r}
+ggplot(data, aes((data$pident * (data$qend - data$qstart)), bitscore)) + geom_point(alpha=0.1) + geom_smooth()
+```
+
