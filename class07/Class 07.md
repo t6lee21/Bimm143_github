@@ -1,4 +1,4 @@
-# class 07: Machine learning 1
+# class07: Machine learning 1
 Trinity Lee A16639698
 
 \#clustering
