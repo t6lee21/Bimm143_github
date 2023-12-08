@@ -16,3 +16,12 @@ Class 10: [Bioinformatics/Alphafold](https://github.com/t6lee21/Bimm143_github/b
 
 Class 12: [Population Analysis](https://github.com/t6lee21/Bimm143_github/blob/main/Class12/Class12.md)
 
+Class 13: [DESeq lab](https://github.com/t6lee21/Bimm143_github/blob/main/class13/Class13.md)
+
+Class 14: [DESeq2 Mini Project](https://github.com/t6lee21/Bimm143_github/blob/main/class14/class14.md)
+
+Class 17: [Github Plots](https://github.com/t6lee21/Bimm143_github/blob/main/class17/class17plots.md)
+
+Class 19: [Mini Project Pertussis](https://github.com/t6lee21/Bimm143_github/blob/main/Class19/Class19.md)
+
+
