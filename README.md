@@ -22,6 +22,6 @@ Class 14: [DESeq2 Mini Project](https://github.com/t6lee21/Bimm143_github/blob/m
 
 Class 17: [Github Plots](https://github.com/t6lee21/Bimm143_github/blob/main/class17/class17plots.md)
 
-Class 19: [Mini Project Pertussis](https://github.com/t6lee21/Bimm143_github/blob/main/Class19/Class19.md)
+Class 19: [Mini Project Pertussis](https://github.com/t6lee21/Bimm143_github/blob/main/Class19/class19.md)
 
 
